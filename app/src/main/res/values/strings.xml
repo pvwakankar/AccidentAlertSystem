@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">Accident Alert System</string>
+    <string name="title_activity_maps">Map</string>
+    <string name="hospitals">Hospitals</string>
+    <string name="school">School</string>
+    <string name="mechanics">Mechanics</string>
+</resources>
