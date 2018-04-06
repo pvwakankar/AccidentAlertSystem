@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "822709849422",
+    "firebase_url": "https://accidentalertsystem-7c4b1.firebaseio.com",
+    "project_id": "accidentalertsystem-7c4b1",
+    "storage_bucket": "accidentalertsystem-7c4b1.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:822709849422:android:de11544f46f8aed4",
+        "android_client_info": {
+          "package_name": "com.example.pvwakankar.accidentalertsystem"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "822709849422-1hjf5m3k5o15o33nis1qvairme8kvnpc.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.pvwakankar.accidentalertsystem",
+            "certificate_hash": "a1d08793e24486fb2a11b3654d7525e1bbc7e432"
+          }
+        },
+        {
+          "client_id": "822709849422-8aufggt75ikdfpkll1dtk4400n8ndegs.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDpzPAA1FfVRvX2FVnAyu4OcfGhU_yztDM"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "822709849422-8aufggt75ikdfpkll1dtk4400n8ndegs.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
