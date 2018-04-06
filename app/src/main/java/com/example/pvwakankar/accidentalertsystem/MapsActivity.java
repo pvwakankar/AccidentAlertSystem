@@ -1,7 +1,6 @@
 package com.example.pvwakankar.accidentalertsystem;
 
 import android.Manifest;
-import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Build;
@@ -14,9 +13,9 @@ import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.Toast;
 
-import com.facebook.login.LoginManager;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -31,13 +30,11 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback,
         GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener,
-        LocationListener {
+        LocationListener, View.OnClickListener {
 
     private GoogleMap mMap;
     private GoogleApiClient mGoogleApiClient;
@@ -51,7 +48,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     //Logout Button
     private Button mLogoutBtn;
 
-
+    private CheckBox hospitalsChkBox;
+    private CheckBox policeChkBox;
+    private CheckBox clinicChkBox;
+    private CheckBox mechanicsChkBox;
     public static final int MY_PERMISSIONS_REQUEST_LOCATION = 99;
 
     @Override
@@ -70,52 +70,17 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             Log.d("onCreate", "Google Play Services available.");
         }
 
-        /*
-        * 1.CLinic And Ambulance
-        * 2.Radio or toggle buttos or check box(Preferable Check Box).
-        * 3.Settings ...(Logout,Radious for location).
-        * 4.Login with Facebook & Gmail.
-        * */
-
         setContentView(R.layout.activity_maps);
 
-        Button btnRestaurant = (Button) findViewById(R.id.btnHospitals);
-        btnRestaurant.setOnClickListener(new View.OnClickListener() {
-            String hospitals = "hospital";
 
-            @Override
-            public void onClick(View v) {
-                Log.d("onClick", "Button is Clicked");
-                mMap.clear();
-                String url = getUrl(latitude, longitude, hospitals);
-                Object[] DataTransfer = new Object[2];
-                DataTransfer[0] = mMap;
-                DataTransfer[1] = url;
-                Log.d("onClick", url);
-                GetNearbyPlacesData getNearbyPlacesData = new GetNearbyPlacesData();
-                getNearbyPlacesData.execute(DataTransfer);
-                Toast.makeText(MapsActivity.this, "Nearby hospitals", Toast.LENGTH_LONG).show();
-            }
-        });
-
-        Button btnMechanics = (Button) findViewById(R.id.btnMechanics);
-        btnMechanics.setOnClickListener(new View.OnClickListener() {
-            String mechanics = "car_repair";
-
-            @Override
-            public void onClick(View v) {
-                Log.d("onClick", "Button is Clicked");
-                mMap.clear();
-                String url = getUrl(latitude, longitude, mechanics);
-                Object[] DataTransfer = new Object[2];
-                DataTransfer[0] = mMap;
-                DataTransfer[1] = url;
-                Log.d("onClick", url);
-                GetNearbyPlacesData getNearbyPlacesData = new GetNearbyPlacesData();
-                getNearbyPlacesData.execute(DataTransfer);
-                Toast.makeText(MapsActivity.this, "Nearby mechanics", Toast.LENGTH_LONG).show();
-            }
-        });
+        hospitalsChkBox = findViewById(R.id.chkHospitals);
+        hospitalsChkBox.setOnClickListener(this);
+        policeChkBox = findViewById(R.id.chkPolice);
+        policeChkBox.setOnClickListener(this);
+        clinicChkBox = findViewById(R.id.chkClinic);
+        clinicChkBox.setOnClickListener(this);
+        mechanicsChkBox = findViewById(R.id.chkMechanics);
+        mechanicsChkBox.setOnClickListener(this);
 
         mLogoutBtn = findViewById(R.id.logoutbtn);
 
@@ -124,15 +89,17 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mapFragment.getMapAsync(this);
     }
 
-    private String getUrl(double latitude, double longitude, String nearbyPlace) {
+    private String getUrl(double latitude, double longitude, String... nearbyPlaces) {
 
         String key = getResources().getString(R.string.google_maps_key);
         StringBuilder googlePlacesUrl = new StringBuilder("https://maps.googleapis.com/maps/api/place/nearbysearch/json?");
-        googlePlacesUrl.append("location=" + latitude + "," + longitude);
-        googlePlacesUrl.append("&radius=" + PROXIMITY_RADIUS);
-        googlePlacesUrl.append("&type=" + nearbyPlace);
+        googlePlacesUrl.append("location=").append(latitude).append(",").append(longitude);
+        googlePlacesUrl.append("&radius=").append(PROXIMITY_RADIUS);
+        for (String nearbyPlace : nearbyPlaces) {
+            googlePlacesUrl.append("&type=").append(nearbyPlace);
+        }
         googlePlacesUrl.append("&sensor=true");
-        googlePlacesUrl.append("&key=" + key);
+        googlePlacesUrl.append("&key=").append(key);
         Log.d("getUrl", googlePlacesUrl.toString());
         return (googlePlacesUrl.toString());
     }
@@ -238,11 +205,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     // Permission denied, Disable the functionality that depends on this permission.
                     Toast.makeText(this, "permission denied", Toast.LENGTH_LONG).show();
                 }
-                return;
             }
-
-            // other 'case' lines to check for other permissions this app might request.
-            //You can add here other case statements according to your requirement.
         }
     }
 
@@ -268,9 +231,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         //move map camera
         mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
         mMap.animateCamera(CameraUpdateFactory.zoomTo(14));
-        Toast.makeText(MapsActivity.this,"Your Current Location", Toast.LENGTH_LONG).show();
+        Toast.makeText(MapsActivity.this, "Your Current Location", Toast.LENGTH_LONG).show();
 
-        Log.d("onLocationChanged", String.format("latitude:%.3f longitude:%.3f",latitude,longitude));
+        Log.d("onLocationChanged", String.format("latitude:%.3f longitude:%.3f", latitude, longitude));
 
         //stop location updates
         if (mGoogleApiClient != null) {
@@ -280,7 +243,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         Log.d("onLocationChanged", "Exit");
     }
 
-    public boolean checkLocationPermission() {
+    public void checkLocationPermission() {
         if (ContextCompat.checkSelfPermission(this,
                 Manifest.permission.ACCESS_FINE_LOCATION)
                 != PackageManager.PERMISSION_GRANTED) {
@@ -288,10 +251,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             // Asking user if explanation is needed
             if (ActivityCompat.shouldShowRequestPermissionRationale(this,
                     Manifest.permission.ACCESS_FINE_LOCATION)) {
-
-                // Show an expanation to the user *asynchronously* -- don't block
-                // this thread waiting for the user's response! After the user
-                // sees the explanation, try again to request the permission.
 
                 //Prompt the user once explanation has been shown
                 ActivityCompat.requestPermissions(this,
@@ -305,9 +264,38 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                         new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
                         MY_PERMISSIONS_REQUEST_LOCATION);
             }
-            return false;
         } else {
-            return true;
         }
+    }
+
+    @Override
+    public void onClick(View view) {
+        if (view.getClass() == CheckBox.class) {
+            mMap.clear();
+
+            if (hospitalsChkBox.isChecked()) {
+                showNearbyPlace("hospital");
+            }
+            if (mechanicsChkBox.isChecked()) {
+                showNearbyPlace("car_repair");
+            }
+            if (clinicChkBox.isChecked()) {
+                showNearbyPlace("doctor");
+            }
+            if (policeChkBox.isChecked()) {
+                showNearbyPlace("police");
+            }
+        }
+    }
+
+    private void showNearbyPlace(String placeType) {
+        String url = getUrl(latitude, longitude, placeType);
+        Object[] dataTransfer = new Object[2];
+        dataTransfer[0] = mMap;
+        dataTransfer[1] = url;
+        Log.d("onClick", url);
+        GetNearbyPlacesData getNearbyPlacesData = new GetNearbyPlacesData();
+        getNearbyPlacesData.execute(dataTransfer);
+        Toast.makeText(MapsActivity.this, "Nearby places", Toast.LENGTH_LONG).show();
     }
 }

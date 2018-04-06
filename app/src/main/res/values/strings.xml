@@ -4,4 +4,7 @@
     <string name="hospitals">Hospitals</string>
     <string name="school">School</string>
     <string name="mechanics">Mechanics</string>
+    <string name="logout">Logout</string>
+    <string name="police">Police</string>
+    <string name="clinic">Clinic</string>
 </resources>

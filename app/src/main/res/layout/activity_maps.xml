@@ -13,28 +13,48 @@
         android:layout_marginRight="@dimen/margin_small"
         android:orientation="horizontal">
 
-        <Button
-            android:id="@+id/btnHospitals"
-            style="?android:attr/borderlessButtonStyle"
+        <CheckBox
+            android:id="@+id/chkHospitals"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="@string/hospitals" />
 
-        <Button
-            android:id="@+id/btnMechanics"
-            style="?android:attr/borderlessButtonStyle"
+        <CheckBox
+            android:id="@+id/chkMechanics"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="@string/mechanics" />
     </LinearLayout>
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/margin_small"
+        android:layout_marginRight="@dimen/margin_small"
+        android:orientation="horizontal">
+
+        <CheckBox
+            android:id="@+id/chkClinic"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/clinic" />
+
+        <CheckBox
+            android:id="@+id/chkPolice"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/police" />
+    </LinearLayout>
+
     <Button
         android:id="@+id/logoutbtn"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Logout" />
+        android:text="@string/logout" />
 
     <fragment xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/map"

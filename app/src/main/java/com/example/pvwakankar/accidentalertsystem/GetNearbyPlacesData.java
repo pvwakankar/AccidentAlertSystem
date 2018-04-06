@@ -32,37 +32,39 @@ public class GetNearbyPlacesData extends AsyncTask<Object, String, String> {
         return googlePlacesData;
     }
 
-    // Implement Checkboxes
-    // CHange marker colors
-    // Imlp fb, gmail login
-
     @Override
     protected void onPostExecute(String result) {
         Log.d("GooglePlacesReadTask", "onPostExecute Entered");
-        List<HashMap<String, String>> nearbyPlacesList = null;
         DataParser dataParser = new DataParser();
-        nearbyPlacesList = dataParser.parse(result);
+        List<GooglePlace> nearbyPlacesList = dataParser.parse(result);
         ShowNearbyPlaces(nearbyPlacesList);
         Log.d("GooglePlacesReadTask", "onPostExecute Exit");
     }
 
-    private void ShowNearbyPlaces(List<HashMap<String, String>> nearbyPlacesList) {
-        for (int i = 0; i < nearbyPlacesList.size(); i++) {
-            Log.d("onPostExecute", "Entered into showing locations");
+    private void ShowNearbyPlaces(List<GooglePlace> nearbyPlacesList) {
+        Log.d("onPostExecute", "Entered into showing locations");
+
+        for (GooglePlace googlePlace : nearbyPlacesList) {
+            LatLng latLng = new LatLng(googlePlace.getLocation().getLat(), googlePlace.getLocation().getLng());
             MarkerOptions markerOptions = new MarkerOptions();
-            HashMap<String, String> googlePlace = nearbyPlacesList.get(i);
-            double lat = Double.parseDouble(googlePlace.get("lat"));
-            double lng = Double.parseDouble(googlePlace.get("lng"));
-            String placeName = googlePlace.get("place_name");
-            String vicinity = googlePlace.get("vicinity");
-            LatLng latLng = new LatLng(lat, lng);
             markerOptions.position(latLng);
-            markerOptions.title(placeName + " : " + vicinity);
+            setMarkerColor(googlePlace, markerOptions);
+            markerOptions.title(googlePlace.getName() + " : " + googlePlace.getVicinity());
             mMap.addMarker(markerOptions);
-            markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
             //move map camera
             mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
-            mMap.animateCamera(CameraUpdateFactory.zoomTo(11));
+        }
+    }
+
+    private void setMarkerColor(GooglePlace googlePlace, MarkerOptions markerOptions) {
+        if (googlePlace.getTypes().contains("hospital")) {
+            markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
+        } else if (googlePlace.getTypes().contains("car_repair")) {
+            markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE));
+        } else if (googlePlace.getTypes().contains("doctor")) {
+            markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));
+        } else if (googlePlace.getTypes().contains("police")) {
+            markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_MAGENTA));
         }
     }
 }
